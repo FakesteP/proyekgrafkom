@@ -13,24 +13,27 @@ import RightTrapezoid from "./components/objects2D/RightTrapezoid";
 import Sun from "./components/objects2D/Sun";
 
 const defaultTransforms = {
+  // 3D objects - posisi tengah di 3D space
   pencil: { x: 0, y: 0, z: 0, scale: 1, rotateY: 0, color: "#ff0000" },
   ladder: { x: 0, y: 0, z: 0, scale: 1, rotateY: 0, color: "#00ff00" },
   magnifier: { x: 0, y: 0, z: 0, scale: 1, rotateY: 0, color: "#0000ff" },
+  // 2D objects - posisi tengah di SVG canvas (200, 150 adalah tengah dari viewBox 400x300)
   bubble: {
-    x: 60,
-    y: 50,
+    x: 200,
+    y: 150,
     scale: 1,
     rotate: 0,
     color: "skyblue",
     border: "black",
   },
-  trapezoid: { x: 0, y: 0, color: "green", border: "black" },
-  sun: { x: 0, y: 0, color: "yellow", border: "orange" },
+  trapezoid: { x: 200, y: 150, scale: 1, color: "green", border: "black" },
+  sun: { x: 200, y: 150, scale: 1, color: "yellow", border: "orange" },
 };
 
 export default function App() {
   const [selected, setSelected] = useState("pencil");
   const [transforms, setTransforms] = useState(defaultTransforms);
+  const orbitControlsRef = useRef();
   let startMouseX, startMouseY;
   let startObjX, startObjY;
 
@@ -130,12 +133,17 @@ export default function App() {
     }
   };
 
-  // Reset transformasi
+  // Reset transformasi - DIPERBAIKI untuk kembali ke tengah
   const resetSelectedTransform = () => {
     setTransforms((prev) => ({
       ...prev,
       [selected]: { ...defaultTransforms[selected] },
     }));
+    
+    // Reset kamera untuk objek 3D agar terlihat di tengah
+    if (["pencil", "ladder", "magnifier"].includes(selected) && orbitControlsRef.current) {
+      orbitControlsRef.current.reset();
+    }
   };
 
   // Render objek
@@ -270,10 +278,16 @@ export default function App() {
       {/* Main content */}
       <main className="main-content">
         {is3D ? (
-          <Canvas camera={{ position: [6, 6, 6] }} className="canvas">
+          <Canvas camera={{ position: [6, 6, 6], fov: 50 }} className="canvas">
             <ambientLight intensity={0.5} />
             <directionalLight position={[10, 10, 5]} intensity={1.2} />
-            <OrbitControls />
+            <OrbitControls 
+              ref={orbitControlsRef}
+              target={[0, 0, 0]}
+              enablePan={true}
+              enableZoom={true}
+              enableRotate={true}
+            />
             {renderObject()}
           </Canvas>
         ) : (
