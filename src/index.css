@@ -1,0 +1,119 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+}
+
+html, body, #root {
+  margin: 0; padding: 0; height: 100%;
+  background: #f0f2f5;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Sidebar kiri */
+.sidebar {
+  width: 280px;
+  background: white;
+  padding: 20px;
+  box-shadow: 2px 0 8px rgb(0 0 0 / 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.object-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-object {
+  padding: 10px;
+  background: #e2e8f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.btn-object:hover {
+  background-color: #cbd5e1;
+}
+
+.btn-object.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Kontrol transformasi & color picker */
+.controls {
+  margin-top: 20px;
+}
+
+.controls h3 {
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.controls p {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin: 4px 0;
+}
+
+.btn-reset {
+  margin: 10px 0;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-reset:hover {
+  background-color: #dc2626;
+}
+
+/* Main canvas area */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Canvas for 3D objects */
+.canvas {
+  width: 80vw;
+  height: 80vh;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+}
+
+/* SVG for 2D objects */
+.svg-canvas {
+  width: 80vw;
+  height: 80vh;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+}
