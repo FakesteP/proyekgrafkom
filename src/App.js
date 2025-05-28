@@ -305,6 +305,55 @@ export default function App() {
     }
   };
 
+  const helps = () => {
+    // Cek kalau overlay sudah ada, supaya gak bikin banyak overlay kalo tombol diklik berkali-kali
+    if (document.getElementById('help-overlay')) return;
+
+    // Buat elemen overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'help-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = 9999;
+
+    // Buat modal isi bantuan
+    const modal = document.createElement('div');
+    modal.style.background = '#fff';
+    modal.style.padding = '20px';
+    modal.style.borderRadius = '8px';
+    modal.style.maxWidth = '400px';
+    modal.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+    modal.innerHTML = `
+      <h2>Cara Penggunaan Program</h2>
+      <p>1. Pilih objek yang ada di panel sebelah kiri.</p>
+      <p>2. Klik kiri (2d)/kanan (3d) pada objek untuk memindahkan objek</p>
+      <p>3. Klik kiri pada objek 3d untuk rotasi</p>
+      <p>4. Atur skala dengan slider atau tombol + - pada keyboard</p>
+      <p>5. Atur warna pada color slider di bagian kiri bawah</p>
+    `;
+
+    // Tambahkan modal ke overlay
+    overlay.appendChild(modal);
+
+    // Tambahkan overlay ke body
+    document.body.appendChild(overlay);
+
+    // Event untuk tutup overlay saat klik di luar modal
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        document.body.removeChild(overlay);
+      }
+    });
+  }
+
+
   // Render objek
   const renderObject = () => {
     switch (selected) {
@@ -422,6 +471,9 @@ export default function App() {
 
           <button className="btn-save" onClick={handleSave}>
             💾 Save as PNG
+          </button>
+          <button className="btn-help" onClick={helps}>
+            Helps
           </button>
         </nav>
 
