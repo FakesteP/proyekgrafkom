@@ -48,6 +48,16 @@ html, body, #root {
   transition: background-color 0.2s ease;
 }
 
+.btn-save {
+  padding: 10px;
+  background: #e2e8f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
 .btn-object:hover {
   background-color: #cbd5e1;
 }

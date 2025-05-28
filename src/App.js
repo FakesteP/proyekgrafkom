@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { HexColorPicker } from "react-colorful";
 import "./index.css";
+import { useThree } from '@react-three/fiber';
 
 import Scissor from "./components/objects3D/Scissor";
 import Ladder from "./components/objects3D/Ladder";
@@ -41,6 +42,16 @@ export default function App() {
   const [selected, setSelected] = useState("scissor");
   const [transforms, setTransforms] = useState(defaultTransforms);
   const orbitControlsRef = useRef();
+
+  const SaveRefs = ({ setRefs }) => {
+  const { gl, scene, camera } = useThree();
+
+  useEffect(() => {
+    setRefs({ gl, scene, camera });
+  }, [gl, scene, camera, setRefs]);
+
+  return null;
+};
 
   // Ref untuk drag state
   const dragState = useRef({
@@ -236,6 +247,64 @@ export default function App() {
     }
   };
 
+  const handleSave = () => {
+    const is3D = ["scissor", "ladder", "magnifier"].includes(selected);
+    
+    if (is3D && window.__threeRefs) {
+      const { gl, scene, camera } = window.__threeRefs;
+      gl.render(scene, camera); // Pastikan render dulu
+
+      gl.domElement.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${selected}-3d-image.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        } else {
+          console.error("Gagal membuat blob dari canvas WebGL");
+        }
+      }, "image/png");
+    } else {
+      // Untuk objek 2D (SVG)
+      const svg = document.querySelector('.svg-canvas');
+      if (!svg) {
+        console.error('SVG element not found!');
+        return;
+      }
+      
+      // Konversi SVG ke canvas lalu ke PNG
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      // Set ukuran canvas sesuai dengan SVG
+      canvas.width = 400;
+      canvas.height = 300;
+      
+      img.onload = function() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${selected}-2d-image.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
+      };
+      
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    }
+  };
+
   // Render objek
   const renderObject = () => {
     switch (selected) {
@@ -350,6 +419,10 @@ export default function App() {
               {obj.charAt(0).toUpperCase() + obj.slice(1)}
             </button>
           ))}
+
+          <button className="btn-save" onClick={handleSave}>
+            💾 Save as PNG
+          </button>
         </nav>
 
         {selected && (
@@ -539,6 +612,7 @@ export default function App() {
               enableZoom={true}
               enableRotate={true}
             />
+            <SaveRefs setRefs={(val) => (window.__threeRefs = val)} />
             {renderObject()}
           </Canvas>
         ) : (
